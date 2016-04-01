@@ -1,4 +1,4 @@
-#chrome-ext-Names
+#chrome-ext-name-translation
 
 **Chrome extension utilizing the Rosette API to translate names on webpages among different languages.**
 
