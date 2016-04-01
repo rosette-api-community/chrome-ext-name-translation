@@ -1,0 +1,78 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
+  <head>
+    <title>Options</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <style>
+      .container {
+        /* avoid an excessively wide status text */
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: 500px;
+        width: 400px;
+        height: 100%;
+      }
+      #status {
+      padding: 10px;
+      min-height: 100px;
+      }
+    </style>
+    <script src="popup.js"></script>
+  </head>
+  <body>
+    <div class="container">
+    	
+		<div class="row">
+			<div class="col-md-3">
+				<h3 class="text-center"><img src="images/RosetteRNT-Icon.png" width="36px" height="36px"></img> Rosette Name Translation</h3>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-3">
+				<hr>
+				<p><strong>Tip:</strong> Highlight a name in your text to translate it</p>
+				<hr>
+				<div class="bg-info" id="status"></div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-3">
+				<hr>
+				<h4>Language Preferences:</h4>
+				
+				<form id="lang-selectors">
+					<label class="checkbox-inline">
+						<input type="checkbox" id="ara" value="ara"> Ara
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="zho" value="zho"> Zho
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="rus" value="rus"> Rus
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="eng" value="eng"> Eng
+					</label>
+					<label class="checkbox-inline">
+						<input type="checkbox" id="kor" value="kor"> Kor
+					</label>
+				</form>
+				
+				<hr>
+			</div>
+		</div>
+	
+		<div class="row">
+				<div class="col-md-3 text-right">
+					<!--<a href="chrome://extensions?options=jbbcffpanimckakafabcgccckdjkpbok">Go to options.</a>-->
+					<a href="options.html"><button type="button" class="btn btn-primary btn-xs">Enter API Key</button></a>
+				</div>
+		</div>
+
+	</div>
+  </body>
+</html>
+
