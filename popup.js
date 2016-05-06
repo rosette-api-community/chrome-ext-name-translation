@@ -1,3 +1,5 @@
+
+var Api = require('rosette-api').Api
 // Returns a list of the values of the checked checkboxes
 function readCheckboxes() {
     var selectors = document.getElementById("lang-selectors").elements;
@@ -39,11 +41,53 @@ document.addEventListener('DOMContentLoaded', function() {
         location.reload();
     });
 
+// recursive request function
+function request(apiSent, endpoint, lang, name, counter){
+    if(counter < 1){
+        return counter;
+    }
+      var languages = {
+                          "eng": "English",
+                          "ara": "Arabic",
+                          "kor": "Korean",
+                          "rus": "Russian",
+                          "zho": "Chinese"
+                      };
+
+      apiSent.parameters.name = name;
+      apiSent.parameters.targetLanguage = lang[0];
+      apiSent.rosette(endpoint, function(err, res){
+            if(err){
+                if(err["message"]){
+                    console.log(err);
+                }
+                //if(counter < 1){
+                 //   return err;
+                //} else {
+                    lang.shift();
+                    counter = counter - 1;
+                    return request(apiSent, endpoint, lang, name, counter);
+                //}
+
+            } else {
+                //if(counter < 1){
+                   // return res;
+                //} else {
+                    lang.shift()
+                    counter = counter - 1;
+                    document.getElementById('status').innerHTML = document.getElementById('status').innerHTML +
+                                                languages[res.targetLanguage] + " Translation: <b>" + res.translation + "</b><br/>";
+                    return request(apiSent, endpoint, lang, name, counter);
+                //}
+            }
+     });
+
+}
+
     // Load translations
     chrome.tabs.getSelected(null, function(tab) {
         chrome.tabs.sendMessage(tab.id, {method: "getSelectedText"}, function(response) { // send message to be received by content.js
-            setTimeout(function() {
-                if (response == undefined || response.data.trim() == "") { // catches error when user selects no text
+                                if (response == undefined || response.data.trim() == "") { // catches error when user selects no text
                     document.getElementById('status').innerHTML = "Try highlighting a name in your text";
                     document.getElementById('status').style.backgroundColor = "#FFFF99";
 
@@ -58,84 +102,19 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Show name highlighted by user
                             document.getElementById('status').innerHTML = "Input Name: " + response.data + "<br/><br/>";
 
-                            /////////////////////////////////////////
-                            // Make XMLHttpRequests to Rosette API //
-                            /////////////////////////////////////////
                             var url = "https://api.rosette.com/rest/v1/name-translation";
-
-                            // Languages currently available for Rosette API
-                            var languages = {
-                                "ara": "Arabic", 
-                                "zho": "Chinese", 
-                                "rus": "Russian", 
-                                "eng": "English", 
-                                "kor": "Korean"
-                            };
+                            var apiSent = new Api(result.rosetteKey);
+                            var endpoint = "nameTranslation";
 
                             // Languages the user wants to translate
                             var selected = readCheckboxes();
-
-                            // Create JSON inputs to send to Rosette API
-                            var inputs = [];
-                            var x = 0;
-                            for (key in selected) {
-                                inputs[x] = "{\"name\": \"" + response.data + "\", \"targetLanguage\": \"" + selected[key] + "\"}";
-                                x++;
-                            }
-
-                            // Create a new XMLHttpRequest for each language to be translated
-                            var requests = [];
-                            for (var key in selected) {
-
-                                var xhr = new XMLHttpRequest();
-                                xhr.open("POST", url, true);
-                                xhr.setRequestHeader("X-RosetteAPI-Key", result.rosetteKey);
-                                xhr.setRequestHeader("Accept", "application/json");
-                                xhr.setRequestHeader("Content-Type", "application/json");
-                                xhr.errCaught = false;
-
-                                requests.push(xhr);
-                            }
-
-                            var i = 0;
-                            for (var key in selected) {
-                                // Set the onreadystatechange function of each XHR to load the translation to the extension's popup window
-                                requests[i].onreadystatechange = function() {
-                                    if (this.readyState == 4 && this.status == 200) {
-                                        var JSONresponse = JSON.parse(this.responseText);
-                                        console.log(JSONresponse);
-                                        document.getElementById('status').innerHTML = document.getElementById('status').innerHTML +
-                                            languages[JSONresponse.targetLanguage] + " Translation: <b>" + JSONresponse.translation + "</b><br/>";
-                                    } else if (this.status == 415) { // catch errors when translation is not supported by Rosette API; often applies to identity translations, e.g. English -> English
-                                        if (this.errCaught == false) {
-                                            document.getElementById('status').innerHTML = document.getElementById('status').innerHTML +
-                                                "Sorry, this translation not supported<br/>";
-                                        }
-                                        this.errCaught = true;
-                                    }
-                                }
-                                
-                                // Have the completion of each request trigger the sending of the next one
-                                // This prevents Rosette API error 429 (Too Many Requests) by only ever letting the extension send one request at a time
-                                // The onload method is called when the XMLHttpRequest receives any response, even if that response is another
-                                // Rosette API error, such as 415 (Unsupported Language)
-                                requests[i].onload = function() {
-                                    if (requests.indexOf(this) < requests.length - 1) { // Don't let the last request trigger a request that doesn't exist
-                                        var input = inputs[requests.indexOf(this) + 1];
-                                        requests[requests.indexOf(this) + 1].send(input);
-                                    }
-                                }
-                                
-                                i++;
-                            }
-
-                            // Start the chain reaction of request-sending
-                            requests[0].send(inputs[0]);
+                            var counter = selected.length;
+                            console.log(request(apiSent, endpoint, selected, response.data, selected.length))
 
                         }
                     });
                 }
-            }, 100);
+
         });
     });
 });

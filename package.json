@@ -1,0 +1,25 @@
+{
+  "name": "chrome-ext-name-translation",
+  "version": "1.0.0",
+  "description": "Rosette Name Translation - Translate an entity name (person, location, or organization) from one language to another.",
+  "main": "popup.js",
+  "scripts": {
+    "build": "browserify popup.js -o bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rosette-api-community/chrome-ext-name-translation.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/rosette-api-community/chrome-ext-name-translation/issues"
+  },
+  "homepage": "https://github.com/rosette-api-community/chrome-ext-name-translation#readme",
+  "dependencies": {
+    "rosette-api": "^1.1.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0"
+  }
+}
