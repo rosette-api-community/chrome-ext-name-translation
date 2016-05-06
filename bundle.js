@@ -15994,14 +15994,6 @@ function request(apiSent, endpoint, lang, name, counter){
     });
 });
 
-function retainKey() {
-    chrome.storage.local.get('rosetteKey', function(result) {
-        document.getElementById('user-key').innerHTML = result.rosetteKey;
-    });
-}
-
-document.getElementById('back-to-options').addEventListener('click', retainKey);
-
 // NOTE: The content_fb.js file in the chrome-ext-Sentiment repo contains the
 // most elegant structure for sending non-concurrent XMLHttpRequests (to avoid 429 errors)
 // out of all the Chrome extension examples.
