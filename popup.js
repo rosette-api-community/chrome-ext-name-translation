@@ -1,5 +1,5 @@
 
-var Api = require('rosette-api').Api
+var Api = require('rosette-api')
 // Returns a list of the values of the checked checkboxes
 function readCheckboxes() {
     var selectors = document.getElementById("lang-selectors").elements;
@@ -105,6 +105,10 @@ function request(apiSent, endpoint, lang, name, counter){
                             var url = "https://api.rosette.com/rest/v1/name-translation";
                             var apiSent = new Api(result.rosetteKey);
                             var endpoint = "nameTranslation";
+                            var appHeader = [];
+                            appHeader[0] = "X-RosetteAPI-App";
+                            appHeader[1] = "chrome-extension-name-translation";
+                            apiSent.parameters.customHeaders = [appHeader];
 
                             // Languages the user wants to translate
                             var selected = readCheckboxes();
