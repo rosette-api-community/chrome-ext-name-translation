@@ -1,6 +1,6 @@
 {
     "name": "Rosette Name Translation",
-    "version": "1.1",
+    "version": "1.3",
     "description": "Rosette Name Translation - Translate an entity name (person, location, or organization) from one language to another.",
     "browser_action": { "default_icon": "images/RosetteRNT-Icon.png", "default_popup": "popup.html" },
     "icons": { "128": "images/RosetteRNT-Icon.png" },
